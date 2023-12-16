@@ -3,7 +3,6 @@ This is the main file for the project.
 """
 import numpy as np
 import arcade
-import timeit
 import time
 from sprites import Rock, Paper, Scissors
 from settings import *
@@ -29,6 +28,7 @@ class RPS_sim(arcade.Window):
         
         # Set up counter
         self.fps = FPSCounter()
+        self.time = time.time()
 
     def setup(self):
         """
@@ -70,7 +70,9 @@ class RPS_sim(arcade.Window):
         self.all_sprites_list.draw()
 
         fps_text = f"FPS: {self.fps.get_fps():.0f}"
-        arcade.draw_text(fps_text, 10, SCREEN_HEIGHT - 20, arcade.color.BLACK, 14)
+        arcade.draw_text(fps_text, 10, SCREEN_HEIGHT - 20, arcade.color.BLACK, 12)
+        time_text = f"Time elapsed: {time.time() - self.time:.0f} s"
+        arcade.draw_text(time_text, 10, SCREEN_HEIGHT - 40, arcade.color.BLACK, 12)
 
         self.fps.tick()
 
