@@ -1,7 +1,7 @@
 """
 This is the main file for the project.
 """
-import numpy as np
+# import numpy as np
 import arcade
 import time
 from sprites import Rock, Paper, Scissors

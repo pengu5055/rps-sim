@@ -1,1 +1,0 @@
-/home/pengu5055/Documents/GitHub/rps-sim/.venv/lib64/python3.11/site-packages/nuitka/build/static_src/MainProgram.c
