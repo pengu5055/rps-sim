@@ -7,10 +7,62 @@ import time
 from sprites import Rock, Paper, Scissors
 from settings import *
 from src import *
+from PIL import Image, ImageFilter
 
-class RPS_sim(arcade.Window):
+
+class MenuView(arcade.View):
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
+
+    def on_show_view(self):
+        arcade.set_background_color(arcade.color.BLACK)
+
+    def on_draw(self):
+        self.clear()
+        arcade.draw_text("Menu", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE, 30, anchor_x="center")
+        arcade.draw_text("Click to play", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 30, arcade.color.WHITE, 20, anchor_x="center")
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        game_view = GameView()
+        self.window.show_view(game_view)
+
+
+class PauseView(arcade.View):
+    def __init__(self, game_view, last_frame):
+        super().__init__()
+        self.game_view = game_view
+        self.blur_texture = None
+        self.last_frame = last_frame
+    
+    def on_show_view(self):
+        self.create_blur_texture(self.last_frame)
+        arcade.draw_lrwh_rectangle_textured(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, self.blur_texture)
+
+    def on_draw(self):
+        self.clear()
+        arcade.draw_text("Pause", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE, 30, anchor_x="center")
+        
+    def on_key_press(self, key, modifiers):
+        # Resume Simulation
+        if key == arcade.key.ESCAPE:
+            self.window.show_view(self.game_view)
+        elif key == arcade.key.ENTER:
+            game = GameView()
+            game.setup()
+            self.window.show_view(game)
+    
+    def create_blur_texture(self, image):
+        # Convert to PIL image for processing
+        pil_image = Image.frombytes("RGBA", image.size, image.tobytes())
+        # Apply blur filter
+        blurred_image = pil_image.filter(ImageFilter.GaussianBlur(radius=10))
+        # Convert back to arcade texture
+        self.blur_texture = arcade.Texture("blurred", blurred_image)
+
+
+class GameView(arcade.View):
+    def __init__(self):
+        super().__init__()
 
         # Sprite lists
         self.all_sprites_list = None
@@ -21,10 +73,6 @@ class RPS_sim(arcade.Window):
 
         # Set up the player
         self.player = None
-
-        # Window settings
-        self.set_mouse_visible(True)
-        arcade.set_background_color((233, 249, 244, 1))
         
         # Set up counter
         self.fps = FPSCounter()
@@ -35,14 +83,11 @@ class RPS_sim(arcade.Window):
         Set up the game and initialize the variables.
         """
         # Sprite lists
-        self.all_sprites_list = arcade.SpriteList()
-        self.rock_list = arcade.SpriteList()
-        self.paper_list = arcade.SpriteList()
-        self.scissors_list = arcade.SpriteList()
-        self.newly_created_sprites = arcade.SpriteList()
-
-        # Set up the player
-        # TODO
+        self.all_sprites_list = arcade.SpriteList(use_spatial_hash=True)
+        self.rock_list = arcade.SpriteList(use_spatial_hash=True)
+        self.paper_list = arcade.SpriteList(use_spatial_hash=True)
+        self.scissors_list = arcade.SpriteList(use_spatial_hash=True)
+        self.newly_created_sprites = arcade.SpriteList(use_spatial_hash=True)
 
         # Set up the rocks
         for i in range(ROCK_COUNT):
@@ -61,6 +106,9 @@ class RPS_sim(arcade.Window):
            scissors = Scissors(SCISSORS_IMAGE, SCISSORS_SCALING)
            self.scissors_list.append(scissors)
            self.all_sprites_list.append(scissors)
+    
+    def on_show_view(self):
+        arcade.set_background_color((233, 249, 244, 1))
         
     def on_draw(self):
         """
@@ -75,6 +123,12 @@ class RPS_sim(arcade.Window):
         arcade.draw_text(time_text, 10, SCREEN_HEIGHT - 40, arcade.color.BLACK, 16)
 
         self.fps.tick()
+
+    def on_key_press(self, key, modifiers):
+        if key == arcade.key.ESCAPE:
+            last_frame = arcade.get_image()
+            pause_view = PauseView(self, last_frame)
+            self.window.show_view(pause_view)
 
     def on_update(self, delta_time: float):
         """
@@ -141,8 +195,10 @@ class RPS_sim(arcade.Window):
 
 def main():
     """ Main method """
-    game = RPS_sim()
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    game = GameView()
     game.setup()
+    window.show_view(game)
     arcade.run()
 
 
