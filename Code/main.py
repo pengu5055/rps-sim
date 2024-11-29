@@ -23,7 +23,7 @@ class RPS_sim(arcade.Window):
         self.player = None
 
         # Window settings
-        self.set_mouse_visible(False)
+        self.set_mouse_visible(True)
         arcade.set_background_color((233, 249, 244, 1))
         
         # Set up counter
@@ -70,9 +70,9 @@ class RPS_sim(arcade.Window):
         self.all_sprites_list.draw()
 
         fps_text = f"FPS: {self.fps.get_fps():.0f}"
-        arcade.draw_text(fps_text, 10, SCREEN_HEIGHT - 20, arcade.color.BLACK, 12)
+        arcade.draw_text(fps_text, 10, SCREEN_HEIGHT - 20, arcade.color.BLACK, 16)
         time_text = f"Time elapsed: {time.time() - self.time:.0f} s"
-        arcade.draw_text(time_text, 10, SCREEN_HEIGHT - 40, arcade.color.BLACK, 12)
+        arcade.draw_text(time_text, 10, SCREEN_HEIGHT - 40, arcade.color.BLACK, 16)
 
         self.fps.tick()
 

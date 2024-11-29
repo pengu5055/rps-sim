@@ -3,7 +3,7 @@ A module for sprites.
 """
 import numpy as np
 import arcade
-from settings import SCREEN_WIDTH, SCREEN_HEIGHT
+from settings import SCREEN_WIDTH, SCREEN_HEIGHT, V_SCALE
 
 class Rock(arcade.Sprite):
     """
@@ -21,8 +21,8 @@ class Rock(arcade.Sprite):
         self.center_x = np.random.randint(SCREEN_WIDTH)
         self.center_y = np.random.randint(SCREEN_HEIGHT)
 
-        self.change_x = np.random.random() * np.random.choice([-1, 1])
-        self.change_y = np.random.random() * np.random.choice([-1, 1])
+        self.change_x = np.random.random() * np.random.choice([-1, 1]) * V_SCALE
+        self.change_y = np.random.random() * np.random.choice([-1, 1]) * V_SCALE
 
         self.state = "rock"
 
@@ -62,8 +62,8 @@ class Paper(arcade.Sprite):
         self.center_x = np.random.randint(SCREEN_WIDTH)
         self.center_y = np.random.randint(SCREEN_HEIGHT)
 
-        self.change_x = np.random.random() * np.random.choice([-1, 1])
-        self.change_y = np.random.random() * np.random.choice([-1, 1])
+        self.change_x = np.random.random() * np.random.choice([-1, 1]) * V_SCALE
+        self.change_y = np.random.random() * np.random.choice([-1, 1]) * V_SCALE
 
         self.state = "paper"
 
@@ -103,8 +103,8 @@ class Scissors(arcade.Sprite):
         self.center_x = np.random.randint(SCREEN_WIDTH)
         self.center_y = np.random.randint(SCREEN_HEIGHT)
 
-        self.change_x = np.random.random() * np.random.choice([-1, 1])
-        self.change_y = np.random.random() * np.random.choice([-1, 1])
+        self.change_x = np.random.random() * np.random.choice([-1, 1]) * V_SCALE
+        self.change_y = np.random.random() * np.random.choice([-1, 1]) * V_SCALE
 
         self.state = "scissors"
 
