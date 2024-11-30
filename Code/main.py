@@ -8,6 +8,7 @@ from sprites import Rock, Paper, Scissors
 from settings import *
 from src import *
 from PIL import Image, ImageFilter
+import uuid
 
 
 class MenuView(arcade.View):
@@ -31,16 +32,21 @@ class PauseView(arcade.View):
     def __init__(self, game_view, last_frame):
         super().__init__()
         self.game_view = game_view
-        self.blur_texture = None
+
+        # Convert to PIL image for processing and blur
         self.last_frame = last_frame
-    
-    def on_show_view(self):
-        self.create_blur_texture(self.last_frame)
-        arcade.draw_lrwh_rectangle_textured(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, self.blur_texture)
+        pil_image = Image.frombytes("RGBA", self.last_frame.size, self.last_frame.tobytes())
+        blurred_image = pil_image.filter(ImageFilter.GaussianBlur(radius=5))
+        texture_id = f"blurred_{uuid.uuid4()}"
+        self.blur_texture = arcade.Texture(texture_id, blurred_image)
+
 
     def on_draw(self):
         self.clear()
+        arcade.set_background_color((0, 0, 0, 255))
+        arcade.draw_lrwh_rectangle_textured(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, self.blur_texture, alpha=100)
         arcade.draw_text("Pause", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE, 30, anchor_x="center")
+
         
     def on_key_press(self, key, modifiers):
         # Resume Simulation
@@ -50,14 +56,6 @@ class PauseView(arcade.View):
             game = GameView()
             game.setup()
             self.window.show_view(game)
-    
-    def create_blur_texture(self, image):
-        # Convert to PIL image for processing
-        pil_image = Image.frombytes("RGBA", image.size, image.tobytes())
-        # Apply blur filter
-        blurred_image = pil_image.filter(ImageFilter.GaussianBlur(radius=10))
-        # Convert back to arcade texture
-        self.blur_texture = arcade.Texture("blurred", blurred_image)
 
 
 class GameView(arcade.View):
