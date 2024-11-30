@@ -45,7 +45,12 @@ class PauseView(arcade.View):
         self.clear()
         arcade.set_background_color((0, 0, 0, 255))
         arcade.draw_lrwh_rectangle_textured(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, self.blur_texture, alpha=100)
-        arcade.draw_text("Pause", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE, 30, anchor_x="center")
+        arcade.draw_text("Paused", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE, 30,
+                         anchor_x="center", font_name="IBM Plex Mono Medium")
+        arcade.draw_text("Press ESC to resume", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 30, arcade.color.WHITE, 20,
+                            anchor_x="center", font_name="IBM Plex Mono Medium")
+        arcade.draw_text("Press ENTER to restart", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 60, arcade.color.WHITE, 20,
+                            anchor_x="center", font_name="IBM Plex Mono Medium")
 
         
     def on_key_press(self, key, modifiers):
@@ -116,9 +121,9 @@ class GameView(arcade.View):
         self.all_sprites_list.draw()
 
         fps_text = f"FPS: {self.fps.get_fps():.0f}"
-        arcade.draw_text(fps_text, 10, SCREEN_HEIGHT - 20, arcade.color.BLACK, 16)
+        arcade.draw_text(fps_text, 10, SCREEN_HEIGHT - 20, arcade.color.BLACK, 16, font_name="IBM Plex Mono Medium")
         time_text = f"Time elapsed: {time.time() - self.time:.0f} s"
-        arcade.draw_text(time_text, 10, SCREEN_HEIGHT - 40, arcade.color.BLACK, 16)
+        arcade.draw_text(time_text, 10, SCREEN_HEIGHT - 40, arcade.color.BLACK, 16, font_name="IBM Plex Mono Medium")
 
         self.fps.tick()
 
