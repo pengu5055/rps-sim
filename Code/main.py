@@ -3,6 +3,7 @@ This is the main file for the project.
 """
 # import numpy as np
 import arcade
+import arcade.gui
 import time
 from sprites import Rock, Paper, Scissors
 from settings import *
@@ -14,18 +15,59 @@ import uuid
 class MenuView(arcade.View):
     def __init__(self):
         super().__init__()
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+
+        self.v_box = arcade.gui.UIBoxLayout()
+        ui_title = arcade.gui.UITextArea(text="Rock-Paper-Scissors Simulator", width=int(SCREEN_WIDTH // 2), height=int(SCREEN_HEIGHT // 2),
+                         color=arcade.color.WHITE, font_size=30, font_name="IBM Plex Mono Medium")
+        self.v_box.add(ui_title.with_space_around(bottom=10))
+
+        ui_start = arcade.gui.UIFlatButton(text="Start!", width=200, color=arcade.color.WHITE, font_size=20, font_name="IBM Plex Mono Medium")
+        self.v_box.add(ui_start.with_space_around(bottom=20))
+
+        ui_settings = arcade.gui.UIFlatButton(text="Settings", width=200, color=arcade.color.WHITE, font_size=20, font_name="IBM Plex Mono Medium")
+        self.v_box.add(ui_settings.with_space_around(bottom=20))
+
+        ui_exit = arcade.gui.UIFlatButton(text="Exit", width=200, color=arcade.color.WHITE, font_size=20, font_name="IBM Plex Mono Medium")
+        self.v_box.add(ui_exit)
+
+        # Handle Button Presses
+        @ui_start.event("on_click")
+        def on_click_start(event):
+            game = GameView()
+            game.setup()
+            self.window.show_view(game)
+
+        @ui_settings.event("on_click")
+        def on_click_settings(event):
+            # TODO: Implement settings view
+            pass
+            # settings = SettingsView()
+            # self.window.show_view(settings)
+
+        @ui_exit.event("on_click")
+        def on_click_exit(event):
+            arcade.close_window()
+
+        self.manager.add(
+            arcade.gui.UIAnchorWidget(
+                anchor_x="center_x",
+                anchor_y="center_y",
+                child=self.v_box)
+        )
 
     def on_show_view(self):
-        arcade.set_background_color(arcade.color.BLACK)
+        arcade.set_background_color((170, 213, 160, 1))
 
     def on_draw(self):
         self.clear()
-        arcade.draw_text("Menu", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE, 30, anchor_x="center")
-        arcade.draw_text("Click to play", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 30, arcade.color.WHITE, 20, anchor_x="center")
+        self.manager.draw()
 
     def on_mouse_press(self, x, y, button, modifiers):
-        game_view = GameView()
-        self.window.show_view(game_view)
+        # game_view = GameView()
+        # self.window.show_view(game_view)
+        pass
 
 
 class PauseView(arcade.View):
@@ -47,9 +89,11 @@ class PauseView(arcade.View):
         arcade.draw_lrwh_rectangle_textured(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, self.blur_texture, alpha=100)
         arcade.draw_text("Paused", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE, 30,
                          anchor_x="center", font_name="IBM Plex Mono Medium")
-        arcade.draw_text("Press ESC to resume", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 30, arcade.color.WHITE, 20,
+        arcade.draw_text("ESC to resume", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 50, arcade.color.WHITE, 20,
                             anchor_x="center", font_name="IBM Plex Mono Medium")
-        arcade.draw_text("Press ENTER to restart", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 60, arcade.color.WHITE, 20,
+        arcade.draw_text("ENTER to restart", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 80, arcade.color.WHITE, 20,
+                            anchor_x="center", font_name="IBM Plex Mono Medium")
+        arcade.draw_text("Q to return to menu", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 110, arcade.color.WHITE, 15,
                             anchor_x="center", font_name="IBM Plex Mono Medium")
 
         
@@ -61,6 +105,9 @@ class PauseView(arcade.View):
             game = GameView()
             game.setup()
             self.window.show_view(game)
+        elif key == arcade.key.Q:
+            menu = MenuView()
+            self.window.show_view(menu)
 
 
 class GameView(arcade.View):
@@ -111,6 +158,7 @@ class GameView(arcade.View):
            self.all_sprites_list.append(scissors)
     
     def on_show_view(self):
+        # 212, 234, 208
         arcade.set_background_color((233, 249, 244, 1))
         
     def on_draw(self):
@@ -201,7 +249,8 @@ def main():
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     game = GameView()
     game.setup()
-    window.show_view(game)
+    menu = MenuView()
+    window.show_view(menu)
     arcade.run()
 
 
