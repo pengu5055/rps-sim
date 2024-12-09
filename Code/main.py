@@ -64,10 +64,39 @@ class MenuView(arcade.View):
         self.clear()
         self.manager.draw()
 
-    def on_mouse_press(self, x, y, button, modifiers):
-        # game_view = GameView()
-        # self.window.show_view(game_view)
-        pass
+
+class SettingsView(arcade.View):
+    def __init__(self):
+        super().__init__()
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+
+        self.v_box = arcade.gui.UIBoxLayout()
+        ui_title = arcade.gui.UITextArea(text="Settings", width=int(SCREEN_WIDTH // 2), height=int(SCREEN_HEIGHT // 2),
+                         color=arcade.color.WHITE, font_size=30, font_name="IBM Plex Mono Medium")
+        self.v_box.add(ui_title.with_space_around(bottom=10))
+
+        ui_back = arcade.gui.UIFlatButton(text="Back", width=200, color=arcade.color.WHITE, font_size=20, font_name="IBM Plex Mono Medium")
+        self.v_box.add(ui_back.with_space_around(bottom=20))
+
+        self.manager.add(
+            arcade.gui.UIAnchorWidget(
+                anchor_x="center_x",
+                anchor_y="center_y",
+                child=self.v_box)
+        )
+
+        @ui_back.event("on_click")
+        def on_click_back(event):
+            menu = MenuView()
+            self.window.show_view(menu)
+
+    def on_show_view(self):
+        arcade.set_background_color((170, 213, 160, 1))
+
+    def on_draw(self):
+        self.clear()
+        self.manager.draw()
 
 
 class PauseView(arcade.View):

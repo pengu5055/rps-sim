@@ -2,9 +2,6 @@
 Helper functions and objects for the main script are
 defined here to keep the main script clean.
 """
-import numpy as np
-import arcade
-import timeit
 import time
 import collections
 
